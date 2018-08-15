@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 import org.hathitrust.htrc.data.ops.TextOptions;
 import org.hathitrust.htrc.examples.textprocessing.enhanced.EnhStructuredArticlePage;
 import org.hathitrust.htrc.textprocessing.runningheaders.PageStructure;
@@ -12,6 +13,9 @@ import org.hathitrust.htrc.textprocessing.runningheaders.java.PageStructureParse
 import org.hathitrust.htrc.textprocessing.runningheaders.java.PageStructureParser.StructureParserConfig;
 import scala.Enumeration.Value;
 import scala.collection.JavaConverters;
+import tdm.featureextractor.java.PageFeatureExtractor;
+import tdm.featureextractor.java.features.PageFeatures;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Main {
 
@@ -46,6 +50,16 @@ public class Main {
         StructuredArticlePage secondPage = structuredPages.get(1);  // zero-based index
         System.out.println("==== SECOND PAGE BODY ====");
         System.out.println(secondPage.body());
+
+        // we could perform feature extraction on these pages also, like so:
+        List<PageFeatures> features =
+            structuredPages.stream().map(PageFeatureExtractor::extractPageFeatures)
+                           .collect(Collectors.toList());
+
+        // and print out the second page features as JSON
+        System.out.println("==== EXTRACTED FEATURES FROM SECOND PAGE ====");
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(System.out, features.get(1));
 
         // but wait, there's more!
         // we can augment our existing article model(s) to include some useful text operations,
