@@ -23,9 +23,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.hathitrust.htrc</groupId>
-            <artifactId>tdm-feature-extractor_2.12</artifactId>
-            <version>2.0</version>
+            <groupId>tdm</groupId>
+            <artifactId>feature-extractor_2.12</artifactId>
+            <version>2.1</version>
         </dependency>
 
         <dependency>
