@@ -52,14 +52,22 @@ public class Main {
         System.out.println(secondPage.body());
 
         // we could perform feature extraction on these pages also, like so:
-        List<PageFeatures> features =
-            structuredPages.stream().map(PageFeatureExtractor::extractPageFeatures)
+        // (created a new class TdmPageFeatures which captures the fact that pages contain a "seq" attribute for TDM)
+        List<TdmPageFeatures> features =
+            structuredPages.stream()
+                           .map(page -> {
+                               PageFeatures standardFeatures = PageFeatureExtractor.extractPageFeatures(page);
+                               return TdmPageFeatures.withSeq(String.format("%08d", page.id), standardFeatures);
+                           })
                            .collect(Collectors.toList());
 
+        // Document is a class that captures the format of the EF structure for TDM
+        Document doc = new Document(volName, new DocumentFeatures(features));
+
         // and print out the second page features as JSON
-        System.out.println("==== EXTRACTED FEATURES FROM SECOND PAGE ====");
+        System.out.println("==== EXTRACTED FEATURES FROM THE DOCUMENT ====");
         ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(System.out, features.get(1));
+        mapper.writeValue(System.out, doc);
 
         // but wait, there's more!
         // we can augment our existing article model(s) to include some useful text operations,
